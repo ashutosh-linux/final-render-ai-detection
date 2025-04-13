@@ -1,10 +1,10 @@
-# Use official Python image
-FROM python:3.10-slim
+# Use an official PyTorch base image that already supports CUDA and Torch
+FROM pytorch/pytorch:1.13.1-cuda11.6-cudnn8-runtime
 
-# Set workdir
+# Set work directory
 WORKDIR /app
 
-# Install system dependencies
+# System dependencies
 RUN apt-get update && apt-get install -y \
     git \
     build-essential \
@@ -12,18 +12,19 @@ RUN apt-get update && apt-get install -y \
     python3-pyqt5 \
     cmake \
     libgl1-mesa-glx \
-    && pip install --upgrade pip
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy files
+# Copy everything into container
 COPY . .
 
-# Install Python dependencies except detectron2
-RUN pip install --no-cache-dir -r requirements.txt
+# Install base requirements first
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-# Install detectron2 separately from GitHub (Render-safe)
+# Install detectron2 from GitHub
 RUN pip install 'git+https://github.com/facebookresearch/detectron2.git'
 
-# Expose streamlit port
+# Expose Streamlit port
 EXPOSE 8501
 
 # Run the app
