@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: unauthorized-detection
+    env: docker
+    plan: free
+    repo: https://github.com/ashutosh-linux/AI-powered-detection
+    branch: main
+    dockerfilePath: ./Dockerfile
